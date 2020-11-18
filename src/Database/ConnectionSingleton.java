@@ -1,8 +1,6 @@
 package Database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ConnectionSingleton {
 	private Connection c;
@@ -13,7 +11,7 @@ public class ConnectionSingleton {
 			String url = "jdbc:oracle:thin:@localhost:1521:XE";
 			c = DriverManager.getConnection(url, "...", "...");
 		} catch (SQLException e) {
-			System.out.println(e);
+			System.err.println("SQLException: " + e.getMessage());
 		}
 	}
 
@@ -26,10 +24,18 @@ public class ConnectionSingleton {
 					s = new ConnectionSingleton();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println("SQLException: " + e.getMessage());
 			}
 		}
 		return s;
+	}
+
+	public void close() {
+		try {
+			this.c.close();
+		} catch (SQLException e) {
+			System.err.println("SQLException: " + e.getMessage());
+		}
 	}
 
 	public Connection getConnection() {
