@@ -1,0 +1,175 @@
+create table Article(
+titre varchar2(500) NOT NULL,
+résumé varchar2(500),
+typeA varchar2(500),
+primary key (titre)
+);
+create table Annotation(
+libellé varchar2(500) NOT NULL,
+primary key (libellé)
+);
+create table Laboratoire(
+nomL varchar2(500) NOT NULL,
+sigleL varchar2(500),
+adresseL varchar2(500),
+urlL varchar2(500),
+primary key (nomL)
+);
+create table Chercheur(
+email varchar2(500) NOT NULL,
+nomC varchar2(500),
+prenomC varchar2(500),
+urlC varchar2(500),
+primary key (email)
+);
+create table Noter(
+email varchar2(500) NOT NULL,
+titre varchar2(500) NOT NULL,
+Note number(38),
+primary key (email,titre),
+foreign key (email) references Chercheur(email),
+foreign key (titre) references Article(titre)
+);
+create table Ecrire(
+email varchar2(500) NOT NULL,
+titre varchar2(500) NOT NULL,
+primary key (email,titre),
+foreign key (titre) references Article(titre),
+foreign key (email) references Chercheur(email)
+);
+create table Annoter(
+email varchar2(500) NOT NULL,
+titre varchar2(500) NOT NULL,
+libellé varchar2(500) NOT NULL,
+primary key (email,titre,libellé),
+foreign key (titre) references Article(titre),
+foreign key (email) references Chercheur(email),
+foreign key (libellé) references Annotation(libellé)
+);
+create table Travailler(
+email varchar2(500) NOT NULL,
+nomL varchar2(500) NOT NULL,
+primary key (email,nomL),
+foreign key (nomL) references Laboratoire(nomL),
+foreign key (email) references Chercheur(email)
+);
+create table Support(
+nomS varchar2(500) NOT NULL,
+typeS varchar2(500),
+primary key (nomS)
+);
+create table Publier(
+titre varchar2(500) NOT NULL,
+nomS varchar2(500) NOT NULL,
+anneeP number(38),
+primary key (nomS,titre),
+foreign key (titre) references Article(titre),
+foreign key (nomS) references Support(nomS)
+);
+insert into Article values('Adding Structure to Unstructured Data','We develop a new schema for unstructured data. Traditional schemas resemble the type systems of programming languages.','Long');
+insert into Article values('A User-centric Framework for Accessing Biological Sources and Tools','We study the representation and querying of XML with incomplete information. We consider a simple model for XML data and their DTDs, a very simple query language, and a representation system for incomplete information in the spirit of the representations systems developed by Imielinski and Lipski for relational databases.','Long');
+insert into Article values('PDiffView: Viewing the Difference in Provenance of Workflow Results','Provenance Difference Viewer (PDiffView) is a prototype based on these algorithms for differencing runs of SPFL specifications.','Court');
+insert into Article values('Automata and Logics for Words and Trees over an Infinite Alphabet','In a data word or a data tree each position carries a label from a finite alphabet and a data value from some infinite domain. These models have been considered in the realm of semistructured data, timed automata and extended temporal logics. This paper survey several know results on automata and logics manipulating data words and data trees, the focus being on their relative expressive power and decidability.','Long');
+insert into Article values('Representing and Querying XML with Incomplete Information','We study the representation and querying of XML with incomplete information. We consider a simple model for XML data and their DTDs, a very simple query language, and a representation system for incomplete information in the spirit of the representations systems developed by Imielinski and Lipski for relational databases. In the scenario we consider, the incomplete information about an XML document is continuously enriched by successive queries to the document.','Long');
+insert into Article values('The TLA +  Proof System: Building a Heterogeneous Verification Platform','Model checking has proved to be an efficient technique for finding subtle bugs in concurrent and distributed algorithms and systems. However, it is usually limited to the analysis of small instances of such systems, due to the problem of state space explosion. When model checking finds no more errors, one can attempt to verify the correctness of a model using theorem proving, which also requires efficient tool support. ','Long');
+insert into Article values('Partial reversal acyclicity','Partial Reversal (PR) is a link reversal algorithm which ensures that an initially directed acyclic graph (DAG) is eventually a destination-oriented DAG. While proofs exist to establish the acyclicity property of PR, they rely on assigning labels to either the nodes or the edges in the graph. In this work we show that such labeling is not necessary and outline a simpler direct proof of the acyclicity property.','Court');
+insert into Article values('Reliably Detecting Connectivity Using Local Graph Traits','This paper studies local graph traits and their relationship with global graph properties. Specifically, we focus on graph k-connectivity. First we prove a negative result that shows there does not exist a local graph trait which perfectly captures graph k-connectivity. We then present three different local graph traits which can be used to reliably predict the k-connectivity of a graph with varying degrees of accuracy. ','Long');
+insert into Article values('Generalized Universality','This paper presents, two decades after k-set consensus was introduced, the generalization with k > 1 of state machine replication. We show that with k-set consensus, any number of processes can emulate k state machines of which at least one remains highly available. While doing so, we also generalize the very notion of consensus universality. ','Long');
+insert into Article values('Transactional Memory: Glimmer of a Theory','Transactional memory (TM) is a promising paradigm for concurrent programming. This paper is an overview of our recent theoretical work on defining a theory of TM. We first recall some TM correctness properties and then overview results on the inherent power and limitations of TMs.','Tutoriel');
+insert into Chercheur values('peter@cis.upenn.edu','Buneman','Peter','http://homepages.inf.ed.ac.uk/opb/');
+insert into Chercheur values('cohen@lri.fr','Cohen-Boulakia','Sarah','http://www.lri.fr/~cohen');
+insert into Chercheur values('chris@lri.fr','Froidevaux','Christine','http://www.lri.fr/~chris/');
+insert into Chercheur values('susan@cis.upenn.edu','Davidson','Susan','http://www.cis.upenn.edu/~susan/');
+insert into Chercheur values('luc.segoufin@inria.fr','Segoufin','Luc','http://www-rocq.inria.fr/~segoufin/');
+insert into Chercheur values('lamport@microsoft.com','Lamport','Leslie','http://www.lamport.org/');
+insert into Chercheur values('lynch@theory.csail.mit.edu','Lynch','Nancy','http://people.csail.mit.edu/lynch/');
+insert into Chercheur values('Rachid.Guerraoui@epfl.ch','Guerraoui','Rachid','http://lpdwww.epfl.ch/rachid/');
+insert into Laboratoire values('Laboratory for Foundations of Computer Science','LFCS','LFCS, School of Informatics Crichton Stree Edinburgh EH8 9LE');
+insert into Laboratoire values('Department of Computer and Information Science University of Pennsylvania','CIS','305 Levine/572 Levine North Department of Computer and Information Science  University of Pennsylvania  Levine Hall  3330 Walnut Street  Philadelphia, PA 19104-6389');
+insert into Laboratoire values('Laboratoire de Recherche en Informatique','LRI','Bât 490 Université Paris-Sud 11 91405 Orsay Cedex France');
+insert into Laboratoire values('Laboratoire Spécification et Vérification','LSV','ENS de Cachan, 61 avenue du Président Wilson, 94235 CACHAN Cedex, FRANCE');
+insert into Laboratoire values('Distributed Programming Laboratory','LPD','Bat INR 326 Station 14 1015 Lausanne Switzerland ','http://lpd.epfl.ch/site/');
+insert into Laboratoire values('Theory of Distributed Systems','TDS','32 Vassar Street (32-G672A) Cambridge MA 02139, USA','http://groups.csail.mit.edu/tds/');
+insert into Laboratoire values('Microsoft Corporation','Microsoft','1065 La Avenida Mountain View, CA 94043USA.','http://research.microsoft.com');
+insert into Laboratoire values('INRIA Saclay - Ile-de-France','INRIA Saclay','Domaine de Voluceau Rocquencourt - BP 105 78153 Le Chesnay Cedex, France','http://www.inria.fr/centre/saclay');
+insert into Support values('ICDT','Conference');
+insert into Support values('DILS','Conference');
+insert into Support values('TODS','Journal');
+insert into Support values('VLDB','Journal');
+insert into Support values('CLS','Conference');
+insert into Support values('CAV','Conference');
+insert into Support values('CONCUR','Conference');
+insert into Support values('OPODIS','Conference');
+insert into Support values('PODC','Conference');
+insert into Support values('ICTAC','Conference');
+insert into Annotation values('data');
+insert into Annotation values('bio');
+insert into Annotation values('workflow');
+insert into Annotation values('theory');
+insert into Annotation values('XML');
+insert into Annotation values('Concurrency');
+insert into Annotation values('TLA');
+insert into Annotation values('Consencus');
+insert into Annotation values('Graph');
+insert into Annotation values('Reliability');
+insert into Ecrire values('peter@cis.upenn.edu','Adding Structure to Unstructured Data');
+insert into Ecrire values('susan@cis.upenn.edu','Adding Structure to Unstructured Data');
+insert into Ecrire values('susan@cis.upenn.edu','A User-centric Framework for Accessing Biological Sources and Tools');
+insert into Ecrire values('cohen@lri.fr','A User-centric Framework for Accessing Biological Sources and Tools');
+insert into Ecrire values('chris@lri.fr','A User-centric Framework for Accessing Biological Sources and Tools');
+insert into Ecrire values('luc.segoufin@inria.fr','Automata and Logics for Words and Trees over an Infinite Alphabet');
+insert into Ecrire values('luc.segoufin@inria.fr','Representing and Querying XML with Incomplete Information');
+insert into Ecrire values('Rachid.Guerraoui@epfl.ch','Generalized Universality');
+insert into Ecrire values('Rachid.Guerraoui@epfl.ch','Transactional Memory: Glimmer of a Theory');
+insert into Ecrire values('lynch@theory.csail.mit.edu','Reliably Detecting Connectivity Using Local Graph Traits');
+insert into Ecrire values('lynch@theory.csail.mit.edu','Partial reversal acyclicity');
+insert into Ecrire values('lamport@microsoft.com','The TLA +  Proof System: Building a Heterogeneous Verification Platform');
+insert into Publier values('Adding Structure to Unstructured Data','ICDT','1997');
+insert into Publier values('A User-centric Framework for Accessing Biological Sources and Tools','DILS','2005');
+insert into Publier values('Representing and Querying XML with Incomplete Information','TODS','2006');
+insert into Publier values('PDiffView: Viewing the Difference in Provenance of Workflow Results','VLDB','2009');
+insert into Publier values('Automata and Logics for Words and Trees over an Infinite Alphabet','CLS','2006');
+insert into Publier values('The TLA +  Proof System: Building a Heterogeneous Verification Platform','ICTAC','2009');
+insert into Publier values('Partial reversal acyclicity','PODC','2011');
+insert into Publier values('Reliably Detecting Connectivity Using Local Graph Traits','OPODIS','2010');
+insert into Publier values('Generalized Universality','CONCUR','2011');
+insert into Publier values('Transactional Memory: Glimmer of a Theory','CAV','2010');
+insert into Travailler values ('peter@cis.upenn.edu','Laboratory for Foundations of Computer Science');
+insert into Travailler values('susan@cis.upenn.edu','Department of Computer and Information Science University of Pennsylvania');
+insert into Travailler values('peter@cis.upenn.edu','Department of Computer and Information Science University of Pennsylvania');
+insert into Travailler values('cohen@lri.fr','Laboratoire de Recherche en Informatique');
+insert into Travailler values('chris@lri.fr','Laboratoire de Recherche en Informatique');
+insert into Travailler values('luc.segoufin@inria.fr','Laboratoire de Recherche en Informatique');
+insert into Travailler values('luc.segoufin@inria.fr','INRIA Saclay - Ile-de-France');
+insert into Travailler values('lamport@microsoft.com','Microsoft Corporation');
+insert into Travailler values('lynch@theory.csail.mit.edu','Theory of Distributed Systems');
+insert into Travailler values('Rachid.Guerraoui@epfl.ch','Distributed Programming Laboratory');
+insert into Travailler values('Rachid.Guerraoui@epfl.ch','INRIA Saclay - Ile-de-France');
+insert into Annoter values('luc.segoufin@inria.fr','Adding Structure to Unstructured Data','data');
+insert into Annoter values('peter@cis.upenn.edu','A User-centric Framework for Accessing Biological Sources and Tools','bio');
+insert into Annoter values('peter@cis.upenn.edu','Adding Structure to Unstructured Data','XML');
+insert into Annoter values('peter@cis.upenn.edu','PDiffView: Viewing the Difference in Provenance of Workflow Results','workflow');
+insert into Annoter values('cohen@lri.fr','Automata and Logics for Words and Trees over an Infinite Alphabet','theory');
+insert into Annoter values('lamport@microsoft.com','The TLA +  Proof System: Building a Heterogeneous Verification Platform','TLA');
+insert into Annoter values('lynch@theory.csail.mit.edu','Generalized Universality','consencus');
+insert into Annoter values('lynch@theory.csail.mit.edu','Transactional Memory: Glimmer of a Theory','Concurrency');
+insert into Annoter values('Rachid.Guerraoui@epfl.ch','Partial reversal acyclicity','Graph');
+insert into Annoter values('Rachid.Guerraoui@epfl.ch','Reliably Detecting Connectivity Using Local Graph Traits','Reliability');
+insert into Noter values('luc.segoufin@inria.fr','Adding Structure to Unstructured Data',4);
+insert into Noter values('luc.segoufin@inria.fr','Automata and Logics for Words and Trees over an Infinite Alphabet',1);
+insert into Noter values('luc.segoufin@inria.fr','A User-centric Framework for Accessing Biological Sources and Tools',4);
+insert into Noter values('luc.segoufin@inria.fr','PDiffView: Viewing the Difference in Provenance of Workflow Results',5);
+insert into Noter values('luc.segoufin@inria.fr','Representing and Querying XML with Incomplete Information',1);
+insert into Noter values('peter@cis.upenn.edu','A User-centric Framework for Accessing Biological Sources and Tools',2);
+insert into Noter values('peter@cis.upenn.edu','Automata and Logics for Words and Trees over an Infinite Alphabet',1);
+insert into Noter values('peter@cis.upenn.edu','Automata and Logics for Words and Trees over an Infinite Alphabet',1);
+insert into Noter values('cohen@lri.fr','A User-centric Framework for Accessing Biological Sources and Tools',2);
+insert into Noter values('cohen@lri.fr','PDiffView: Viewing the Difference in Provenance of Workflow Results',1);
+insert into Noter values('Rachid.Guerraoui@epfl.ch','Adding Structure to Unstructured Data',1);
+insert into Noter values('Rachid.Guerraoui@epfl.ch','Automata and Logics for Words and Trees over an Infinite Alphabet',4);
+insert into Noter values('Rachid.Guerraoui@epfl.ch','A User-centric Framework for Accessing Biological Sources and Tools',2);
+insert into Noter values('Rachid.Guerraoui@epfl.ch','PDiffView: Viewing the Difference in Provenance of Workflow Results',1);
+insert into Noter values('Rachid.Guerraoui@epfl.ch','Representing and Querying XML with Incomplete Information',5);
+insert into Noter values('lamport@microsoft.com','A User-centric Framework for Accessing Biological Sources and Tools',3);
+insert into Noter values('lamport@microsoft.com','Automata and Logics for Words and Trees over an Infinite Alphabet',4);
+insert into Noter values('lamport@microsoft.com','Automata and Logics for Words and Trees over an Infinite Alphabet',4);

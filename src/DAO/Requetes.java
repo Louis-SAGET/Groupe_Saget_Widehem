@@ -1,5 +1,9 @@
 package DAO;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.*;
 
@@ -210,4 +214,31 @@ public class Requetes {
 		}
 		return res;
 	}
+
+	public void creationBdd(String fichier) {
+		String chaine ="";
+		try {
+			InputStream ips=new FileInputStream(fichier);
+			InputStreamReader ipsr=new InputStreamReader(ips);
+			BufferedReader br=new BufferedReader(ipsr);
+			String ligne;
+			while ((ligne=br.readLine())!=null){
+				chaine=chaine+ligne;
+				if (ligne.contains(";")) {
+					PreparedStatement ps = c.prepareStatement(chaine);
+					ps.executeQuery();
+					ps.close();
+					chaine="";
+				}
+			}
+			br.close();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException: " + e.getMessage());
+		}
+		catch (Exception e){
+			System.err.println("erreur de fichier"+ e.getMessage());
+		}
+	}
+
 }
