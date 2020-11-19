@@ -11,7 +11,8 @@ public class ConnectionSingleton {
 
 	private ConnectionSingleton() {
 		try {
-			String url = "jdbc:oracle:thin:@localhost:1521:XE";
+			//String url = "jdbc:oracle:thin:@localhost:1521:XE";
+			String url = "jdbc:oracle:thin:@charlemagne:1521:infodb";
 			c = DriverManager.getConnection(url, new String(this.login), new String(this.password));
 		} catch (SQLException e) {
 			System.err.println("SQLException: " + e.getMessage());
