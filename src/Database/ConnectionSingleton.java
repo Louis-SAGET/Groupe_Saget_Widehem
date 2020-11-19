@@ -5,27 +5,22 @@ import java.sql.*;
 public class ConnectionSingleton {
 	private Connection c;
 	private static ConnectionSingleton s;
-	
-	private StringBuffer login;
-	private StringBuffer password;
 
-	private ConnectionSingleton() {
-		try {
-			//String url = "jdbc:oracle:thin:@localhost:1521:XE";
-			String url = "jdbc:oracle:thin:@charlemagne:1521:infodb";
-			c = DriverManager.getConnection(url, new String(this.login), new String(this.password));
+	private ConnectionSingleton(String url, String user, String password) {
+		try {			
+			c = DriverManager.getConnection(url, user, password);
 		} catch (SQLException e) {
 			System.err.println("SQLException: " + e.getMessage());
 		}
 	}
 
-	public static ConnectionSingleton getInstance() {
+	public static ConnectionSingleton getInstance(String url, String user, String password) {
 		if (s == null) {
-			s = new ConnectionSingleton();
+			s = new ConnectionSingleton(url, user, password);
 		} else {
 			try {
 				if (s.c != null && s.c.isClosed()) {
-					s = new ConnectionSingleton();
+					s = new ConnectionSingleton(url, user, password);
 				}
 			} catch (SQLException e) {
 				System.err.println("SQLException: " + e.getMessage());
@@ -34,14 +29,23 @@ public class ConnectionSingleton {
 		return s;
 	}
 	
-	public void open(String user, String mdp) {
+	public static ConnectionSingleton getInstance() {
+		return s;
+	}
+	/*
+	public void open(String url, String user, String mdp) {
 		try {
 			if (s.c.isClosed()) {
 				s.login = new StringBuffer(user);
-				s.login = new StringBuffer(mdp);
+				s.password = new StringBuffer(mdp);
+				s.url = new StringBuffer(url);
 				ConnectionSingleton.getInstance();
 			} else {
 				s.close();
+				s.login = new StringBuffer(user);
+				s.password = new StringBuffer(mdp);
+				s.url = new StringBuffer(url);
+				ConnectionSingleton.getInstance();
 			}
 		} catch (SQLException e) {
 			System.err.println("SQLException: " + e.getMessage());
@@ -62,9 +66,9 @@ public class ConnectionSingleton {
 		} catch (SQLException e) {
 			System.err.println("SQLException: " + e.getMessage());
 		}
-	}
+	}*/
 
 	public Connection getConnection() {
-		return c;
+		return s.c;
 	}
 }
