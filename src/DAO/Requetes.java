@@ -14,16 +14,16 @@ public class Requetes {
 		this.c = connec;
 	}
 
-	public List<Article> requete_1(String nom) {
+	public List<Article> requete_1(String email) {
 		List<Article> list = new ArrayList<Article>();
 
 		try {
 			PreparedStatement ps = c.prepareStatement(
-					"select article.titre from article " + "inner join ecrire on article.titre = ecrire.titre "
-							+ "inner join chercheur on ecrire.email = chercheur.email " + "where nomchercheur = ? "
+					"select titre from ecrire "
+							+ "where email = ? "
 							+ "order by article.titre asc");
 
-			ps.setString(1, nom);
+			ps.setString(1, email);
 
 			ResultSet res = ps.executeQuery();
 
@@ -45,8 +45,8 @@ public class Requetes {
 		List<Chercheur> list = new ArrayList<Chercheur>();
 
 		try {
-			PreparedStatement ps = c.prepareStatement("select email from travailler "
-					+ "where email != ?  and nomlabo = (select nomlabo from travailler where email = ?) "
+			PreparedStatement ps = c.prepareStatement("select email from ecrire "
+					+ "where email != ?  and titre = (select titre from ecrire where email = ?) "
 					+ "order by email asc");
 
 			ps.setString(1, email);
@@ -96,8 +96,8 @@ public class Requetes {
 		List<Chercheur> list = new ArrayList<Chercheur>();
 
 		try {
-			PreparedStatement ps = c.prepareStatement("select email, count(titre) from annoter " + "group by email "
-					+ "having count(titre) >= ? " + "order by email");
+			PreparedStatement ps = c.prepareStatement("select distinct email, count(titre) from annoter " + "group by email "
+					+ "having count(titre) >= ? " + "order by email asc");
 
 			ps.setInt(1, nb);
 
@@ -128,7 +128,7 @@ public class Requetes {
 			ResultSet res = ps.executeQuery();
 
 			if (!res.wasNull()) {
-				moyenne = res.getDouble("avg(note");
+				moyenne = res.getDouble("avg(note)");
 			} else {
 				moyenne = -1;
 			}
@@ -149,7 +149,7 @@ public class Requetes {
 					.prepareStatement("select ecrire.email, count(ecrire.titre), count(note), avg(note) from ecrire "
 							+ "inner join noter on ecrire.titre = noter.titre "
 							+ "inner join travailler on ecrire.email = travailler.email " + "where nomlabo = ? "
-							+ "group by ecrire.email " + "order by avg(note) desc, ecrire.email asc");
+							+ "group by ecrire.email " + "order by count(ecrire.titre) desc, ecrire.email asc");
 
 			ps.setString(1, labo);
 
@@ -174,6 +174,9 @@ public class Requetes {
 
 	public boolean requete_7(String article) {
 		boolean res = false;
+		
+		List<String> list_1 = new ArrayList<String>();
+		List<String> list_2 = new ArrayList<String>();
 
 		try {
 			PreparedStatement ps_1 = c.prepareStatement("select travailler.nomlabo from travailler "
@@ -182,6 +185,12 @@ public class Requetes {
 			ps_1.setString(1, article);
 
 			ResultSet res_1 = ps_1.executeQuery();
+			
+			if (!res_1.wasNull()) {
+				while (res_1.next()) {
+					list_1.add(res_1.getString("nomlabo"));
+				}
+			}
 
 			PreparedStatement ps_2 = c.prepareStatement("select travailler.nomlabo from travailler "
 					+ "inner join noter on travailler.email = noter.email " + "where titre = ? and note = max(note)");
@@ -189,9 +198,20 @@ public class Requetes {
 			ps_2.setString(1, article);
 
 			ResultSet res_2 = ps_2.executeQuery();
+			
+			if (!res_2.wasNull()) {
+				while (res_2.next()) {
+					list_1.add(res_2.getString("nomlabo"));
+				}
+			}
 
-			if (res_1.getString("nomlabo").equals(res_2.getString("nomlabo"))) {
-				res = true;
+			int i = 0;
+			while (!res && i < list_1.size()) {
+				if (list_2.contains(list_1.get(i))) {
+					res = true;
+				} else {
+					i++;
+				}
 			}
 
 			res_1.close();
@@ -205,8 +225,28 @@ public class Requetes {
 	}
 
 	public void creationBdd(String fichier) {
-		String chaine = "";
+		String chaine = "drop table if exists ";
+		List<String> nom_table = new ArrayList<String>();
+		
+		nom_table.add("publier");
+		nom_table.add("support");
+		nom_table.add("travailler");
+		nom_table.add("annoter");
+		nom_table.add("ecrire");
+		nom_table.add("noter");
+		nom_table.add("chercheur");
+		nom_table.add("laboratoire");
+		nom_table.add("annotation");
+		nom_table.add("article");
+		
 		try {
+			for (int i = 0; i < 10; i++) {
+				PreparedStatement ps_1 = c.prepareStatement(chaine + nom_table.get(i));
+				ps_1.executeQuery();
+				ps_1.close();
+			}
+			
+			chaine = "";			
 			InputStream ips = new FileInputStream(fichier);
 			InputStreamReader ipsr = new InputStreamReader(ips);
 			BufferedReader br = new BufferedReader(ipsr);
@@ -214,10 +254,10 @@ public class Requetes {
 			while ((ligne = br.readLine()) != null) {
 				chaine = chaine + ligne;
 				if (ligne.contains(";")) {
-					chaine.replace(";","");
-					PreparedStatement ps = c.prepareStatement(chaine);
-					ps.executeQuery();
-					ps.close();
+					PreparedStatement ps_2 = c.prepareStatement(chaine.substring(0, chaine.length() - 1));
+					System.out.println(chaine);
+					ps_2.executeQuery();
+					ps_2.close();
 					chaine = "";
 				}
 			}

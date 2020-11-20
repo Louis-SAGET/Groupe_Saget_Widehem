@@ -84,10 +84,10 @@ insert into Chercheur values('luc.segoufin@inria.fr','Segoufin','Luc','http://ww
 insert into Chercheur values('lamport@microsoft.com','Lamport','Leslie','http://www.lamport.org/');
 insert into Chercheur values('lynch@theory.csail.mit.edu','Lynch','Nancy','http://people.csail.mit.edu/lynch/');
 insert into Chercheur values('Rachid.Guerraoui@epfl.ch','Guerraoui','Rachid','http://lpdwww.epfl.ch/rachid/');
-insert into Laboratoire values('Laboratory for Foundations of Computer Science','LFCS','LFCS, School of Informatics Crichton Stree Edinburgh EH8 9LE');
-insert into Laboratoire values('Department of Computer and Information Science University of Pennsylvania','CIS','305 Levine/572 Levine North Department of Computer and Information Science  University of Pennsylvania  Levine Hall  3330 Walnut Street  Philadelphia, PA 19104-6389');
-insert into Laboratoire values('Laboratoire de Recherche en Informatique','LRI','Bât 490 Université Paris-Sud 11 91405 Orsay Cedex France');
-insert into Laboratoire values('Laboratoire Spécification et Vérification','LSV','ENS de Cachan, 61 avenue du Président Wilson, 94235 CACHAN Cedex, FRANCE');
+insert into Laboratoire values('Laboratory for Foundations of Computer Science','LFCS','LFCS, School of Informatics Crichton Stree Edinburgh EH8 9LE',null);
+insert into Laboratoire values('Department of Computer and Information Science University of Pennsylvania','CIS','305 Levine/572 Levine North Department of Computer and Information Science  University of Pennsylvania  Levine Hall  3330 Walnut Street  Philadelphia, PA 19104-6389',null);
+insert into Laboratoire values('Laboratoire de Recherche en Informatique','LRI','Bât 490 Université Paris-Sud 11 91405 Orsay Cedex France',null);
+insert into Laboratoire values('Laboratoire Spécification et Vérification','LSV','ENS de Cachan, 61 avenue du Président Wilson, 94235 CACHAN Cedex, FRANCE',null);
 insert into Laboratoire values('Distributed Programming Laboratory','LPD','Bat INR 326 Station 14 1015 Lausanne Switzerland ','http://lpd.epfl.ch/site/');
 insert into Laboratoire values('Theory of Distributed Systems','TDS','32 Vassar Street (32-G672A) Cambridge MA 02139, USA','http://groups.csail.mit.edu/tds/');
 insert into Laboratoire values('Microsoft Corporation','Microsoft','1065 La Avenida Mountain View, CA 94043USA.','http://research.microsoft.com');
