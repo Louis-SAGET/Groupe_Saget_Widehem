@@ -225,7 +225,7 @@ public class Requetes {
 	}
 
 	public void creationBdd(String fichier) {
-		String chaine = "drop table if exists ";
+		String chaine = "";
 		List<String> nom_table = new ArrayList<String>();
 		
 		nom_table.add("publier");
@@ -241,12 +241,19 @@ public class Requetes {
 		
 		try {
 			for (int i = 0; i < 10; i++) {
-				PreparedStatement ps_1 = c.prepareStatement(chaine + nom_table.get(i));
-				ps_1.executeQuery();
-				ps_1.close();
+				PreparedStatement ps = c.prepareStatement("select count(*) from user_tables where table_name = "+nom_table.get(i));
+				ResultSet res = ps.executeQuery();
+				res.next();
+				if(res.getInt("count(*)")==1) {
+					PreparedStatement ps_1 = c.prepareStatement("drop table " + nom_table.get(i));
+					ps_1.executeQuery();
+					ps_1.close();
+				}
+
+				ps.close();
 			}
 			
-			chaine = "";			
+
 			InputStream ips = new FileInputStream(fichier);
 			InputStreamReader ipsr = new InputStreamReader(ips);
 			BufferedReader br = new BufferedReader(ipsr);
