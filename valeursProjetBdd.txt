@@ -1,25 +1,25 @@
 create table Article(
 titre varchar2(500) NOT NULL,
-résumé varchar2(500),
-typeA varchar2(500),
+resume varchar2(500),
+typearticle varchar2(500),
 primary key (titre)
 );
 create table Annotation(
-libellé varchar2(500) NOT NULL,
-primary key (libellé)
+libelle varchar2(500) NOT NULL,
+primary key (libelle)
 );
 create table Laboratoire(
-nomL varchar2(500) NOT NULL,
-sigleL varchar2(500),
-adresseL varchar2(500),
-urlL varchar2(500),
-primary key (nomL)
+nomlabo varchar2(500) NOT NULL,
+siglelabo varchar2(500),
+adresselabo varchar2(500),
+urllabo varchar2(500),
+primary key (nomlabo)
 );
 create table Chercheur(
 email varchar2(500) NOT NULL,
-nomC varchar2(500),
-prenomC varchar2(500),
-urlC varchar2(500),
+nomchercheur varchar2(500),
+prenomchercheur varchar2(500),
+urlchercheur varchar2(500),
 primary key (email)
 );
 create table Noter(
@@ -40,31 +40,31 @@ foreign key (email) references Chercheur(email)
 create table Annoter(
 email varchar2(500) NOT NULL,
 titre varchar2(500) NOT NULL,
-libellé varchar2(500) NOT NULL,
-primary key (email,titre,libellé),
+libelle varchar2(500) NOT NULL,
+primary key (email,titre,libelle),
 foreign key (titre) references Article(titre),
 foreign key (email) references Chercheur(email),
-foreign key (libellé) references Annotation(libellé)
+foreign key (libelle) references Annotation(libelle)
 );
 create table Travailler(
 email varchar2(500) NOT NULL,
-nomL varchar2(500) NOT NULL,
-primary key (email,nomL),
-foreign key (nomL) references Laboratoire(nomL),
+nomlabo varchar2(500) NOT NULL,
+primary key (email,nomlabo),
+foreign key (nomlabo) references Laboratoire(nomlabo),
 foreign key (email) references Chercheur(email)
 );
 create table Support(
-nomS varchar2(500) NOT NULL,
-typeS varchar2(500),
-primary key (nomS)
+nomsupport varchar2(500) NOT NULL,
+typesupport varchar2(500),
+primary key (nomsupport)
 );
 create table Publier(
 titre varchar2(500) NOT NULL,
-nomS varchar2(500) NOT NULL,
-anneeP number(38),
-primary key (nomS,titre),
+nomsupport varchar2(500) NOT NULL,
+annee_publication number(38),
+primary key (nomsupport,titre),
 foreign key (titre) references Article(titre),
-foreign key (nomS) references Support(nomS)
+foreign key (nomsupport) references Support(nomsupport)
 );
 insert into Article values('Adding Structure to Unstructured Data','We develop a new schema for unstructured data. Traditional schemas resemble the type systems of programming languages.','Long');
 insert into Article values('A User-centric Framework for Accessing Biological Sources and Tools','We study the representation and querying of XML with incomplete information. We consider a simple model for XML data and their DTDs, a very simple query language, and a representation system for incomplete information in the spirit of the representations systems developed by Imielinski and Lipski for relational databases.','Long');
