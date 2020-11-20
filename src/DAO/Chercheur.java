@@ -24,6 +24,8 @@ public class Chercheur {
 			ps.setString(1, mail);
 
 			ResultSet res = ps.executeQuery();
+			
+			res.next();
 
 			this.email = res.getString("email");
 			this.nomChercheur = res.getString("nomchercheur");

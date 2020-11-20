@@ -1,14 +1,18 @@
 package Principales;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.*;
 
 import javax.swing.*;
 
+import DAO.Article;
+import DAO.Chercheur;
 import DAO.Requetes;
 import oracle.jdbc.driver.OracleDriver;
 
@@ -16,10 +20,10 @@ import Database.ConnectionSingleton;
 
 public class Principale {
 
-	private ConnectionSingleton cs;
-	private Connection c;
-
 	public static void main(String[] args) {
+
+		final Requetes[] request = new Requetes[1];
+
 		JFrame frame = new JFrame("OnlineLib");
 		frame.setLayout(new BorderLayout());
 
@@ -54,10 +58,12 @@ public class Principale {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				String user = "louis";
+				String mp = "l904129S";
 				String url = "jdbc:oracle:thin:@localhost:1521:XE";
-				Requetes request = new Requetes(
-						ConnectionSingleton.getInstance(url, jt_user.getText(), jp_password.getText()).getConnection());
-				request.creationBdd("valeursProjetBdd.txt");
+				request[0] = new Requetes(ConnectionSingleton.getInstance(url, user, mp).getConnection());
+				request[0].creationBdd("valeursProjetBdd.txt");
+				System.out.println("connecte.");
 			}
 		});
 
@@ -90,6 +96,7 @@ public class Principale {
 
 		JLabel jl_resultats = new JLabel("Resultats:");
 		JTextArea jt_resultats = new JTextArea();
+		// jt_resultats.setEnabled(false);
 
 		JLabel jl_req_1 = new JLabel("Articles ecrits par le chercheur:");
 		JLabel jl_req_2 = new JLabel("Co-auteurs ayant travaille avec le chercheur:");
@@ -113,9 +120,25 @@ public class Principale {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if (ConnectionSingleton.getInstance() != null && !ConnectionSingleton.getInstance().getConnection().isClosed()) {
-						Requetes request = new Requetes(ConnectionSingleton.getInstance().getConnection());
-						jt_resultats.setText("");
+					if (ConnectionSingleton.getInstance() != null
+							&& !ConnectionSingleton.getInstance().getConnection().isClosed()) {
+
+						PreparedStatement ps = ConnectionSingleton.getInstance().getConnection().prepareStatement(
+								"select titre from ecrire " + "where email = ? " + "order by titre asc");
+
+						ps.setString(1, jt_req_1.getText());
+
+						ResultSet res = ps.executeQuery();
+
+						String chaine = "";
+						while (res.next()) {
+							Article art = new Article(res.getString("titre"));
+							chaine += art.toString() + "\n";
+						}
+						jt_resultats.setText(chaine);
+
+						res.close();
+						ps.close();
 					}
 				} catch (SQLException e1) {
 					System.err.println("SQLException: " + e1.getMessage());
@@ -127,9 +150,45 @@ public class Principale {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Requetes request = new Requetes(ConnectionSingleton.getInstance().getConnection());
-				jt_resultats.setText("");
+				try {
+					if (ConnectionSingleton.getInstance() != null
+							&& !ConnectionSingleton.getInstance().getConnection().isClosed()) {
+						PreparedStatement ps_1 = ConnectionSingleton.getInstance().getConnection()
+								.prepareStatement("select titre from ecrire "
+										+ "where email = ? "
+										+ "order by titre asc");
 
+						ps_1.setString(1, jt_req_2.getText());
+
+						ResultSet res_1 = ps_1.executeQuery();
+
+						String chaine = "";
+
+						while (res_1.next()) {
+							PreparedStatement ps_2 = ConnectionSingleton.getInstance().getConnection()
+									.prepareStatement("select email from ecrire "
+											+ "where titre = ? and email != "
+											+ "order by email asc");
+							
+							ps_2.setString(1, res_1.getString("titre"));
+							
+							ResultSet res_2 = ps_2.executeQuery();
+							
+							while (res_2.next()) {
+								Chercheur aut = new Chercheur(res_2.getString("email"));
+								chaine += aut.toString() + "\n";
+							}
+							res_2.close();
+							ps_2.close();
+						}
+						jt_resultats.setText(chaine);
+
+						res_1.close();
+						ps_1.close();
+					}
+				} catch (SQLException e1) {
+					System.err.println("SQLException: " + e1.getMessage());
+				}
 			}
 		});
 		JButton jb_req_3 = new JButton("Executer la requete 3");
@@ -137,8 +196,25 @@ public class Principale {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Requetes request = new Requetes(ConnectionSingleton.getInstance().getConnection());
-				jt_resultats.setText("");
+				try {
+					if (ConnectionSingleton.getInstance() != null
+							&& !ConnectionSingleton.getInstance().getConnection().isClosed()) {
+
+						PreparedStatement ps = ConnectionSingleton.getInstance().getConnection().prepareStatement(
+								"select email, nomlabo from travailler " + "group by email " + "order by email asc, nomlabo asc");
+
+						ResultSet res = ps.executeQuery();
+
+						String chaine = "";
+
+						while (res.next()) {
+							chaine += res.getString("nomlabo") + "\n";
+						}
+						jt_resultats.setText(chaine);
+					}
+				} catch (SQLException e1) {
+					System.err.println("SQLException: " + e1.getMessage());
+				}
 
 			}
 		});
@@ -147,8 +223,28 @@ public class Principale {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Requetes request = new Requetes(ConnectionSingleton.getInstance().getConnection());
-				jt_resultats.setText("");
+				try {
+					if (ConnectionSingleton.getInstance() != null
+							&& !ConnectionSingleton.getInstance().getConnection().isClosed()) {
+
+						PreparedStatement ps = ConnectionSingleton.getInstance().getConnection().prepareStatement("select distinct email, count(titre) from annoter "
+								+ "group by email " + "having count(titre) >= ? " + "order by email asc");
+
+						ps.setInt(1, Integer.parseInt(jt_req_4.getText()));
+
+						ResultSet res = ps.executeQuery();
+
+						String chaine = "";
+
+						while (res.next()) {
+							Chercheur aut = new Chercheur(res.getString("email"));
+							chaine += aut.toString() + "\n";
+						}
+						jt_resultats.setText(chaine);
+					}
+				} catch (SQLException e1) {
+					System.err.println("SQLException: " + e1.getMessage());
+				}
 
 			}
 		});
@@ -157,8 +253,30 @@ public class Principale {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Requetes request = new Requetes(ConnectionSingleton.getInstance().getConnection());
-				jt_resultats.setText("");
+				try {
+					if (ConnectionSingleton.getInstance() != null
+							&& !ConnectionSingleton.getInstance().getConnection().isClosed()) {
+						double moyenne = 0;
+
+						PreparedStatement ps = ConnectionSingleton.getInstance().getConnection().prepareStatement("select email, avg(note) from noter " + "where email = ?");
+
+						ps.setString(1, jt_req_5.getText());
+
+						ResultSet res = ps.executeQuery();
+
+						if (!res.wasNull()) {
+							moyenne = res.getDouble("avg(note)");
+						} else {
+							moyenne = -1;
+						}
+						jt_resultats.setText("Moyenne: " + moyenne);
+
+						res.close();
+						ps.close();
+					}
+				} catch (SQLException e1) {
+					System.err.println("SQLException: " + e1.getMessage());
+				}
 
 			}
 		});
@@ -167,8 +285,33 @@ public class Principale {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Requetes request = new Requetes(ConnectionSingleton.getInstance().getConnection());
-				jt_resultats.setText("");
+				try {
+					if (ConnectionSingleton.getInstance() != null
+							&& !ConnectionSingleton.getInstance().getConnection().isClosed()) {
+
+						PreparedStatement ps = ConnectionSingleton.getInstance().getConnection()
+								.prepareStatement("select ecrire.email, count(ecrire.titre), count(note), avg(note) from ecrire "
+										+ "inner join noter on ecrire.titre = noter.titre "
+										+ "inner join travailler on ecrire.email = travailler.email " + "where nomlabo = ? "
+										+ "group by ecrire.email " + "order by count(ecrire.titre) desc, ecrire.email asc");
+
+						ps.setString(1, jt_req_6.getText());
+
+						ResultSet res = ps.executeQuery();
+
+						String chaine = "";
+
+						while (res.next()) {
+							Chercheur cherch = new Chercheur(res.getString("email"));
+							chaine +=cherch.toString() + " | Article(s) ecrit: " + res.getInt("count(titre)")
+									+ " | Note(s) obtenue(s): " + res.getInt("count(note)") + " | Moyenne: "
+									+ res.getDouble("avg(note)") + "\n";
+						}
+						jt_resultats.setText(chaine);
+					}
+				} catch (SQLException e1) {
+					System.err.println("SQLException: " + e1.getMessage());
+				}
 
 			}
 		});
@@ -177,9 +320,65 @@ public class Principale {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				Requetes request = new Requetes(ConnectionSingleton.getInstance().getConnection());
-				jt_resultats.setText("");
+				try {
+					
+					if (ConnectionSingleton.getInstance() != null
+							&& !ConnectionSingleton.getInstance().getConnection().isClosed()) {
+
+						boolean res = false;
+						
+						List<String> list_1 = new ArrayList<String>();
+						List<String> list_2 = new ArrayList<String>();
+						
+						PreparedStatement ps_1 = ConnectionSingleton.getInstance().getConnection().prepareStatement("select travailler.nomlabo from travailler "
+								+ "inner join ecrire on travailler.email = ecrire.email " + "where titre = ?");
+
+						ps_1.setString(1, jt_req_7.getText());
+
+						ResultSet res_1 = ps_1.executeQuery();
+
+						
+							while (res_1.next()) {
+								list_1.add(res_1.getString("nomlabo"));
+							}
+						
+
+						PreparedStatement ps_2 = ConnectionSingleton.getInstance().getConnection().prepareStatement("select travailler.nomlabo from travailler "
+								+ "inner join noter on travailler.email = noter.email " + "where titre = ? and note = max(note)");
+
+						ps_2.setString(1, jt_req_7.getText());
+
+						ResultSet res_2 = ps_2.executeQuery();
+						jt_resultats.setText("");
+
+						String chaine = "";
+
+						while (res_2.next()) {
+							list_1.add(res_2.getString("nomlabo"));
+						}
+						int i = 0;
+						while (!res && i < list_1.size()) {
+							if (list_2.contains(list_1.get(i))) {
+								res = true;								
+							} else {
+								i++;
+							}
+						}
+
+						res_1.close();
+						res_2.close();
+						ps_1.close();
+						ps_2.close();
+						
+						if (res) {
+							jt_resultats.setText("Note maximale attribuee par un co-auteur.");
+						} else {
+							jt_resultats.setText("Note maximale non attribuee par un co-auteur.");
+						}
+					}
+				} catch (SQLException e1) {
+					System.err.println("SQLException: " + e1.getMessage());
+				}
 
 			}
 		});

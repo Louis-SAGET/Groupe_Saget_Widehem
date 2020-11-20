@@ -151,7 +151,7 @@ insert into Annoter values('peter@cis.upenn.edu','Adding Structure to Unstructur
 insert into Annoter values('peter@cis.upenn.edu','PDiffView: Viewing the Difference in Provenance of Workflow Results','workflow');
 insert into Annoter values('cohen@lri.fr','Automata and Logics for Words and Trees over an Infinite Alphabet','theory');
 insert into Annoter values('lamport@microsoft.com','The TLA +  Proof System: Building a Heterogeneous Verification Platform','TLA');
-insert into Annoter values('lynch@theory.csail.mit.edu','Generalized Universality','consencus');
+insert into Annoter values('lynch@theory.csail.mit.edu','Generalized Universality','Consencus');
 insert into Annoter values('lynch@theory.csail.mit.edu','Transactional Memory: Glimmer of a Theory','Concurrency');
 insert into Annoter values('Rachid.Guerraoui@epfl.ch','Partial reversal acyclicity','Graph');
 insert into Annoter values('Rachid.Guerraoui@epfl.ch','Reliably Detecting Connectivity Using Local Graph Traits','Reliability');
@@ -162,7 +162,6 @@ insert into Noter values('luc.segoufin@inria.fr','PDiffView: Viewing the Differe
 insert into Noter values('luc.segoufin@inria.fr','Representing and Querying XML with Incomplete Information',1);
 insert into Noter values('peter@cis.upenn.edu','A User-centric Framework for Accessing Biological Sources and Tools',2);
 insert into Noter values('peter@cis.upenn.edu','Automata and Logics for Words and Trees over an Infinite Alphabet',1);
-insert into Noter values('peter@cis.upenn.edu','Automata and Logics for Words and Trees over an Infinite Alphabet',1);
 insert into Noter values('cohen@lri.fr','A User-centric Framework for Accessing Biological Sources and Tools',2);
 insert into Noter values('cohen@lri.fr','PDiffView: Viewing the Difference in Provenance of Workflow Results',1);
 insert into Noter values('Rachid.Guerraoui@epfl.ch','Adding Structure to Unstructured Data',1);
@@ -171,5 +170,4 @@ insert into Noter values('Rachid.Guerraoui@epfl.ch','A User-centric Framework fo
 insert into Noter values('Rachid.Guerraoui@epfl.ch','PDiffView: Viewing the Difference in Provenance of Workflow Results',1);
 insert into Noter values('Rachid.Guerraoui@epfl.ch','Representing and Querying XML with Incomplete Information',5);
 insert into Noter values('lamport@microsoft.com','A User-centric Framework for Accessing Biological Sources and Tools',3);
-insert into Noter values('lamport@microsoft.com','Automata and Logics for Words and Trees over an Infinite Alphabet',4);
 insert into Noter values('lamport@microsoft.com','Automata and Logics for Words and Trees over an Infinite Alphabet',4);

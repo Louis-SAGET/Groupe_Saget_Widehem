@@ -25,6 +25,8 @@ public class Article {
 			ps.setString(1, t);
 
 			ResultSet res = ps.executeQuery();
+			
+			res.next();
 
 			this.titre = res.getString("titre");
 			this.resume = res.getString("resume");
