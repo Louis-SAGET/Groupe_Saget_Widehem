@@ -202,14 +202,24 @@ public class Principale {
 							&& !ConnectionSingleton.getInstance().getConnection().isClosed()) {
 
 						PreparedStatement ps = ConnectionSingleton.getInstance().getConnection().prepareStatement(
-								"select email, nomlabo from travailler " + "group by email " + "order by email asc, nomlabo asc");
+								"select email from chercheur order by email asc");
 
 						ResultSet res = ps.executeQuery();
+
 
 						String chaine = "";
 
 						while (res.next()) {
-							chaine += res.getString("nomlabo") + "\n";
+							PreparedStatement ps2 = ConnectionSingleton.getInstance().getConnection().prepareStatement(
+									"select nomlabo from travailler where email = ? order by nomlabo asc");
+
+								ps2.setString(1, res.getString("email"));
+								chaine += res.getString("email") + "\n --------------------------- \n";
+								ResultSet res2 = ps2.executeQuery();
+								while (res2.next()){
+									chaine += res2.getString("nomlabo") + "\n";
+								}
+
 						}
 						jt_resultats.setText(chaine);
 					}
@@ -228,8 +238,7 @@ public class Principale {
 					if (ConnectionSingleton.getInstance() != null
 							&& !ConnectionSingleton.getInstance().getConnection().isClosed()) {
 
-						PreparedStatement ps = ConnectionSingleton.getInstance().getConnection().prepareStatement("select distinct email, count(titre) from annoter "
-								+ "group by email " + "having count(titre) >= ? " + "order by email asc");
+						PreparedStatement ps = ConnectionSingleton.getInstance().getConnection().prepareStatement("select distinct email, count(titre) from annoter group by email having count(titre) >= ? order by email asc");
 
 						ps.setInt(1, Integer.parseInt(jt_req_4.getText()));
 
