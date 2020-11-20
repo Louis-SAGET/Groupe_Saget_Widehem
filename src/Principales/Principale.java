@@ -14,7 +14,7 @@ import javax.swing.*;
 import DAO.Article;
 import DAO.Chercheur;
 import DAO.Requetes;
-import oracle.jdbc.driver.OracleDriver;
+//import oracle.jdbc.driver.OracleDriver;
 
 import Database.ConnectionSingleton;
 
@@ -167,17 +167,17 @@ public class Principale {
 						while (res_1.next()) {
 							PreparedStatement ps_2 = ConnectionSingleton.getInstance().getConnection()
 									.prepareStatement("select email from ecrire "
-											+ "where titre = ? and email != "
+											+ "where titre = ? and email != ? "
 											+ "order by email asc");
 							
 							ps_2.setString(1, res_1.getString("titre"));
+							ps_2.setString(2, jt_req_2.getText());
 							
 							ResultSet res_2 = ps_2.executeQuery();
 							
-							while (res_2.next()) {
-								Chercheur aut = new Chercheur(res_2.getString("email"));
-								chaine += aut.toString() + "\n";
-							}
+							res_2.next();
+							Chercheur aut = new Chercheur(res_2.getString("email"));
+							chaine += aut.toString() + "\n";
 							res_2.close();
 							ps_2.close();
 						}
@@ -191,6 +191,7 @@ public class Principale {
 				}
 			}
 		});
+
 		JButton jb_req_3 = new JButton("Executer la requete 3");
 		jb_req_3.addActionListener(new ActionListener() {
 
