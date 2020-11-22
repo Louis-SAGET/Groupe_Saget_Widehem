@@ -19,19 +19,19 @@ public class Chercheur {
 		Connection c = cs.getConnection();
 
 		try {
-			PreparedStatement ps = c.prepareStatement("select * from chercheur " + "where nomchercheur = ?");
+			PreparedStatement ps = c.prepareStatement("select * from chercheur " + "where email = ?");
 
 			ps.setString(1, mail);
 
 			ResultSet res = ps.executeQuery();
-			
+
 			res.next();
 
 			this.email = res.getString("email");
 			this.nomChercheur = res.getString("nomchercheur");
 			this.prenomChercheur = res.getString("prenomchercheur");
 			this.urlChercheur = res.getString("urlchercheur");
-			
+
 			res.close();
 			ps.close();
 		} catch (SQLException e) {

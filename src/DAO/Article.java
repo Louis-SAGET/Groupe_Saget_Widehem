@@ -25,20 +25,20 @@ public class Article {
 			ps.setString(1, t);
 
 			ResultSet res = ps.executeQuery();
-			
+
 			res.next();
 
 			this.titre = res.getString("titre");
 			this.resume = res.getString("resume");
 			this.typeArticle = res.getString("typearticle");
-			
+
 			res.close();
 			ps.close();
 		} catch (SQLException e) {
 			System.err.println("SQLException: " + e.getMessage());
 		}
 	}
-	
+
 	public String toString() {
 		return this.titre + " " + this.typeArticle;
 	}
